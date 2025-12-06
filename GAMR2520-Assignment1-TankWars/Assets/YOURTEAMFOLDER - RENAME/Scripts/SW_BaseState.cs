@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public abstract class SW_BaseState
+public abstract class SW_BaseState : AITank
 {
     public abstract Type StateUpdate();
     public abstract Type StateEnter();
