@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SW_PatrolState : SW_BaseState
+public class SW_ChaseState : SW_BaseState
 {
     public override Type StateEnter()
     {
