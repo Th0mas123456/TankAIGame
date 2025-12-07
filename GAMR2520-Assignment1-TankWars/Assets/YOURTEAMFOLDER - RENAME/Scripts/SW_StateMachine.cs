@@ -46,4 +46,5 @@ public class SW_StateMachine : MonoBehaviour
         CurrentState = states[nextState];
         CurrentState.StateEnter();
     }
+    
 }
