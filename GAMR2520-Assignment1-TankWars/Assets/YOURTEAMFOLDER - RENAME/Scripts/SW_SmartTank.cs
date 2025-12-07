@@ -32,6 +32,7 @@ public class SW_SmartTank : AITank
         Dictionary<Type, SW_BaseState> states = new Dictionary<Type, SW_BaseState>();
         states.Add(typeof(SW_PatrolState), new SW_PatrolState(this));
         states.Add(typeof(SW_ChaseState), new SW_ChaseState(this));
+        states.Add(typeof(SW_AttackState), new SW_AttackState(this));
 
         GetComponent<SW_StateMachine>().SetStates(states);
     }
