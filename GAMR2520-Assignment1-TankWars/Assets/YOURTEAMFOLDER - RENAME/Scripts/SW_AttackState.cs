@@ -7,6 +7,7 @@ using System;
 public class SW_AttackState : SW_BaseState
 {
     private SW_SmartTank tank;
+    private GameObject enemyTank;
     
         public SW_AttackState(SW_SmartTank tank)
     {
@@ -22,25 +23,24 @@ public class SW_AttackState : SW_BaseState
 
     public override Type StateUpdate()
         {
-            if (tank.VisibleEnemyTank.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
+            if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
             {
-
                 enemyTank = tank.VisibleEnemyTanks.First().Key;
-
                 if (enemyTank != null)
                 {
-                    float dist = Vector3.Distance(transform.position, enemyTank.transform.position);
+                    float dist = Vector3.Distance(tank.transform.position, enemyTank.transform.position);
                     
                     if (dist < 25f)
-                     {
+                    {
                         TurretFireAtPoint(enemyTank);
-                     }
+                    }
                     else
                     {
                          FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
                     }
+                }
             }
-        }
+        return null;
     }
     public override Type StateExit()
         { 

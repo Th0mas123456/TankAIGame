@@ -9,7 +9,7 @@ public class SW_SmartTank : AITank
     public GameObject enemyTank;
     public GameObject consumable;
     public GameObject enemyBase;
-    public SW_StateMachine StateMachine;
+    
     
 
     public override void AITankStart()
@@ -38,4 +38,25 @@ public class SW_SmartTank : AITank
     }
     
 
+    public Dictionary<GameObject, float> VisibleEnemyTanks
+    {
+        get
+        {
+            return a_TanksFound;
+        }
+    }
+    public Dictionary<GameObject, float> VisibleConsumables
+    {
+        get
+        {
+            return a_ConsumablesFound;
+        }
+    }
+    public Dictionary<GameObject, float> VisibleBases
+    {
+        get
+        {
+            return a_BasesFound;
+        }
+    }
 }
