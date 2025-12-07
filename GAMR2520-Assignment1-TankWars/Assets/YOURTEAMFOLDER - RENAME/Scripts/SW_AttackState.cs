@@ -3,25 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static AStar;
-
+using System;
 public class SW_AttackState : SW_BaseState
 {
-
-    public GameObject enemyTank;
-
-    public GameObject consumable;
-
-    public GameObject enemyBase;
-
+    private SW_SmartTank tank;
+    
+        public SW_AttackState(SW_SmartTank tank)
+    {
+        this.tank = tank;
+    }
+    
+    public override Type StateEnter()
+    {
+        return null;
+    }
     float t;
     public HeuristicMode heuristicMode;
 
-    public void UpdateState()
+    public override Type StateUpdate()
         {
-            if (VisibleEnemyTank.Count > 0 && VisibleEnemyTanks.First().Key != null)
+            if (tank.VisibleEnemyTank.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
             {
 
-                enemyTank = VisibleEnemyTanks.First().Key;
+                enemyTank = tank.VisibleEnemyTanks.First().Key;
 
                 if (enemyTank != null)
                 {
@@ -38,4 +42,8 @@ public class SW_AttackState : SW_BaseState
             }
         }
     }
+    public override Type StateExit()
+        { 
+            return null; 
+        }
 }
