@@ -34,7 +34,7 @@ public class SW_StateMachine : MonoBehaviour
         }
         else
         {
-            Type nextState = CurrentState.GetType();
+            Type nextState = CurrentState.StateUpdate();
             if (nextState != null && nextState != CurrentState.GetType())
             {
                 SwitchToState(nextState);

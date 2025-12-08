@@ -18,7 +18,8 @@ public class SW_ChaseState : SW_BaseState
 
     public override Type StateEnter()
     {
-        return null;
+        Debug.Log("Entered Chase State");
+        return typeof(SW_ChaseState);
     }
 
     public override Type StateExit()
@@ -40,6 +41,10 @@ public class SW_ChaseState : SW_BaseState
                 tank.FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
             }
         }
-        return null;
+        else
+        {
+            return typeof (SW_PatrolState);
+        }
+        return typeof(SW_ChaseState);
     }
 }

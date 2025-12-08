@@ -16,7 +16,8 @@ public class SW_AttackState : SW_BaseState
     
     public override Type StateEnter()
     {
-        return null;
+        Debug.Log("Entered attack State");
+        return typeof(SW_AttackState);
     }
     float t;
     public HeuristicMode heuristicMode;
@@ -46,7 +47,7 @@ public class SW_AttackState : SW_BaseState
             return typeof(SW_PatrolState);
         }
             
-        return null;
+        return typeof(SW_AttackState);
 
         }
     public override Type StateExit()
