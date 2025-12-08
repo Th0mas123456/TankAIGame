@@ -23,25 +23,32 @@ public class SW_AttackState : SW_BaseState
 
     public override Type StateUpdate()
         {
-            if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
+        if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
+        {
+            enemyTank = tank.VisibleEnemyTanks.First().Key;
+            if (enemyTank != null)
             {
-                enemyTank = tank.VisibleEnemyTanks.First().Key;
-                if (enemyTank != null)
+                float dist = Vector3.Distance(tank.transform.position, enemyTank.transform.position);
+
+                if (dist < 25f)
                 {
-                    float dist = Vector3.Distance(tank.transform.position, enemyTank.transform.position);
-                    
-                    if (dist < 25f)
-                    {
-                        tank.TurretFireAtPoint(enemyTank);
-                    }
-                    else
-                    {
-                         tank.FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
-                    }
+                    tank.TurretFireAtPoint(enemyTank);
+
+                }
+                else
+                {
+                    return typeof(SW_ChaseState);
                 }
             }
+        }
+        else
+        {
+            return typeof(SW_PatrolState);
+        }
+            
         return null;
-    }
+
+        }
     public override Type StateExit()
         { 
             return null; 
