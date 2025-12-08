@@ -30,6 +30,7 @@ public class SW_StateMachine : MonoBehaviour
         if(CurrentState == null)
         {
             CurrentState = states.Values.First();
+            CurrentState.StateEnter();
         }
         else
         {
