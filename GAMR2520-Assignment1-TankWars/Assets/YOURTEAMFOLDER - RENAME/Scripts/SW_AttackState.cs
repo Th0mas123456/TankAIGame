@@ -9,7 +9,7 @@ public class SW_AttackState : SW_BaseState
     private SW_SmartTank tank;
     private GameObject enemyTank;
     
-        public SW_AttackState(SW_SmartTank tank)
+    public SW_AttackState(SW_SmartTank tank)
     {
         this.tank = tank;
     }
@@ -32,11 +32,11 @@ public class SW_AttackState : SW_BaseState
                     
                     if (dist < 25f)
                     {
-                        TurretFireAtPoint(enemyTank);
+                        tank.TurretFireAtPoint(enemyTank);
                     }
                     else
                     {
-                         FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
+                         tank.FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
                     }
                 }
             }
