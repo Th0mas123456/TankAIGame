@@ -14,7 +14,6 @@ public class SW_PatrolState : SW_BaseState
     public SW_PatrolState(SW_SmartTank tank)
     {
         this.tank = tank;
-    
     }
 
     public override Type StateEnter()

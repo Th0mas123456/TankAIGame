@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 using static AStar;
 
 public class SW_ChaseState : SW_BaseState
 {
     private SW_SmartTank tank;
     private GameObject enemyTank;
-    private HeuristicMode heuristic;
+    public HeuristicMode heuristicMode;
 
     public SW_ChaseState(SW_SmartTank tank)
     {
@@ -27,16 +28,16 @@ public class SW_ChaseState : SW_BaseState
 
     public override Type StateUpdate()
     {
-        enemyTank = VisibleEnemyTanks.First().Key;
+        enemyTank = tank.VisibleEnemyTanks.First().Key;
         if (enemyTank != null)
         {
-            if (Vector3.Distance(transform.position, tank.transform.position) < 25f)
+            if (Vector3.Distance(tank.transform.position, enemyTank.transform.position) < 25f)
             {
-                // canAttack
+                return typeof(SW_AttackState);
             }
             else
             {
-                FollowPathToWorldPoint(enemyTank, 1f, heauristicMode);
+                tank.FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
             }
         }
         return null;
