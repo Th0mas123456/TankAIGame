@@ -21,7 +21,9 @@ public class SW_RetreatState : SW_BaseState
     public override Type StateEnter()
     {
         Debug.Log("entered retreat state");
+        Debug.Log(tank.TankCurrentHealth);
         return typeof(SW_RetreatState);
+        
     }
 
     public override Type StateExit()
