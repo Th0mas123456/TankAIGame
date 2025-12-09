@@ -1,17 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.UIElements;
 using static AStar;
 
 public class SW_ResupplyState : SW_BaseState
 {
     private SW_SmartTank tank;
     public HeuristicMode heuristicMode;
+    float t;
 
     public SW_ResupplyState(SW_SmartTank tank)
-    {  
+    {
         this.tank = tank;
     }
 
@@ -28,6 +30,22 @@ public class SW_ResupplyState : SW_BaseState
 
     public override Type StateUpdate()
     {
+        if (tank.TankCurrentHealth < 30 || tank.TankCurrentAmmo < 4)
+        {
+            if (tank.VisibleConsumables.Count > 0)
+            {
+                tank.consumable = tank.VisibleConsumables.First().Key;
+                tank.FollowPathToWorldPoint(tank.consumable, 1f, heuristicMode);
+                t += Time.deltaTime;
+                if (t > 10)
+                {
+                    tank.GenerateNewRandomWorldPoint();
+                    t = 0;
+                }
+            }
+        }
         return null;
     }
 }
+    
+       
