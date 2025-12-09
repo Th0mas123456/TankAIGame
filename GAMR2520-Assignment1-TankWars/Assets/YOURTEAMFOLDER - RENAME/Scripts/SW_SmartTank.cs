@@ -34,6 +34,7 @@ public class SW_SmartTank : AITank
         states.Add(typeof(SW_ChaseState), new SW_ChaseState(this));
         states.Add(typeof(SW_AttackState), new SW_AttackState(this));
         states.Add(typeof(SW_RetreatState), new SW_RetreatState(this));
+        states.Add(typeof(SW_ResupplyState), new  SW_ResupplyState(this));
 
         GetComponent<SW_StateMachine>().SetStates(states);
     }

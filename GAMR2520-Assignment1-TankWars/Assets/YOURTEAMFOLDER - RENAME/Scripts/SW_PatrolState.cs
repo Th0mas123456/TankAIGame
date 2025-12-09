@@ -30,6 +30,10 @@ public class SW_PatrolState : SW_BaseState
 
     public override Type StateUpdate()
     {
+        if (tank.TankCurrentHealth < 50 || tank.TankCurrentFuel < 40 || tank.TankCurrentAmmo < 3)
+        {
+            return typeof (SW_ResupplyState);
+        }
         if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
         {
             return typeof(SW_ChaseState);

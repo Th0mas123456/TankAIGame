@@ -30,21 +30,24 @@ public class SW_ResupplyState : SW_BaseState
 
     public override Type StateUpdate()
     {
-        if (tank.TankCurrentHealth < 30 || tank.TankCurrentAmmo < 4)
+        
+         if (tank.VisibleConsumables.Count > 0)
+         {
+             tank.consumable = tank.VisibleConsumables.First().Key;
+             tank.FollowPathToWorldPoint(tank.consumable, 1f, heuristicMode);
+             t += Time.deltaTime;
+             if (t > 10)
+             {
+                 tank.GenerateNewRandomWorldPoint();
+                 t = 0;
+             }
+         }
+        else
         {
-            if (tank.VisibleConsumables.Count > 0)
-            {
-                tank.consumable = tank.VisibleConsumables.First().Key;
-                tank.FollowPathToWorldPoint(tank.consumable, 1f, heuristicMode);
-                t += Time.deltaTime;
-                if (t > 10)
-                {
-                    tank.GenerateNewRandomWorldPoint();
-                    t = 0;
-                }
-            }
+            tank.FollowPathToRandomWorldPoint(1f, heuristicMode);
         }
-        return null;
+
+            return null;
     }
 }
     
