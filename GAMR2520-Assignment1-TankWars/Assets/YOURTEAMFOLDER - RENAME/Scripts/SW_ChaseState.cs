@@ -28,6 +28,10 @@ public class SW_ChaseState : SW_BaseState
 
     public override Type StateUpdate()
     {
+        if (tank.VisibleEnemyTanks.Count == 0)
+        {
+            return typeof(SW_PatrolState);
+        }
         tank.enemyTank = tank.VisibleEnemyTanks.First().Key;
         if (tank.enemyTank != null)
         {

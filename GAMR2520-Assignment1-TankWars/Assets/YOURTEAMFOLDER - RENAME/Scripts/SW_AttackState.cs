@@ -24,6 +24,15 @@ public class SW_AttackState : SW_BaseState
 
     public override Type StateUpdate()
         {
+        if (tank.VisibleEnemyTanks.Count == 0)
+        {
+            return typeof(SW_PatrolState);
+        }
+        if (tank.TankCurrentHealth < 50)
+        {
+            return typeof(SW_RetreatState);
+        }
+       
         if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
         {
             enemyTank = tank.VisibleEnemyTanks.First().Key;
@@ -42,11 +51,7 @@ public class SW_AttackState : SW_BaseState
                 }
             }
         }
-        else
-        {
-            return typeof(SW_PatrolState);
-        }
-            
+           
         return typeof(SW_AttackState);
 
         }
