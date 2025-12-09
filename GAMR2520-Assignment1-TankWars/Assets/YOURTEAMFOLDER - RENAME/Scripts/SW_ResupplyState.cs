@@ -47,7 +47,7 @@ public class SW_ResupplyState : SW_BaseState
             tank.FollowPathToRandomWorldPoint(1f, heuristicMode);
         }
 
-            return null;
+            return typeof(SW_ResupplyState);
     }
 }
     
