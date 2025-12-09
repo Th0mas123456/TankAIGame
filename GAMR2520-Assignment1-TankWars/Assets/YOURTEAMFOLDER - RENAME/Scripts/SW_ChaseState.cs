@@ -8,7 +8,6 @@ using static AStar;
 public class SW_ChaseState : SW_BaseState
 {
     private SW_SmartTank tank;
-    private GameObject enemyTank;
     public HeuristicMode heuristicMode;
 
     public SW_ChaseState(SW_SmartTank tank)
@@ -29,22 +28,22 @@ public class SW_ChaseState : SW_BaseState
 
     public override Type StateUpdate()
     {
-        enemyTank = tank.VisibleEnemyTanks.First().Key;
-        if (enemyTank != null)
+        tank.enemyTank = tank.VisibleEnemyTanks.First().Key;
+        if (tank.enemyTank != null)
         {
-            if (Vector3.Distance(tank.transform.position, enemyTank.transform.position) < 25f)
+            if (Vector3.Distance(tank.transform.position, tank.enemyTank.transform.position) < 25f)
             {
                 return typeof(SW_AttackState);
             }
             else
             {
-                tank.FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
+                tank.FollowPathToWorldPoint(tank.enemyTank, 1f, heuristicMode);
+                return typeof(SW_ChaseState);
             }
         }
         else
         {
             return typeof (SW_PatrolState);
         }
-        return typeof(SW_ChaseState);
     }
 }
