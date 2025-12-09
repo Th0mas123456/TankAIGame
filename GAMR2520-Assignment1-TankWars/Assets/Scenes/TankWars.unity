@@ -100616,6 +100616,7 @@ MonoBehaviour:
   enemyTank: {fileID: 0}
   consumable: {fileID: 0}
   enemyBase: {fileID: 0}
+  heuristicMode: 3
 --- !u!1 &9177135291343502959
 GameObject:
   m_ObjectHideFlags: 0

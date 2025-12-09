@@ -9,8 +9,7 @@ public class SW_SmartTank : AITank
     public GameObject enemyTank;
     public GameObject consumable;
     public GameObject enemyBase;
-    
-    
+    public HeuristicMode heuristicMode;    
 
     public override void AITankStart()
     {
@@ -19,12 +18,10 @@ public class SW_SmartTank : AITank
 
     public override void AITankUpdate()
     {
-        
     }
 
     public override void AIOnCollisionEnter(Collision collision)
     {
-        
     }
 
     private void InitializeStateMachine()
