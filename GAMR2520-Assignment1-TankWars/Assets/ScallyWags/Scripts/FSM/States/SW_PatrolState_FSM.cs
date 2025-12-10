@@ -29,7 +29,7 @@ public class SW_PatrolState_FSM : SW_BaseState_FSM
 
     public override Type StateUpdate()
     {
-        if (tank.TankCurrentHealth < 50 || tank.TankCurrentFuel < 40 || tank.TankCurrentAmmo < 3)
+        if (tank.TankCurrentHealth < 30 || tank.TankCurrentFuel < 30 || tank.TankCurrentAmmo < 3)
         {
             return typeof (SW_ResupplyState_FSM);
         }
@@ -39,7 +39,7 @@ public class SW_PatrolState_FSM : SW_BaseState_FSM
         }
         else
         {
-            tank.FollowPathToRandomWorldPoint(1f, tank.heuristicMode);
+            tank.FollowPathToRandomWorldPoint(0.5f, tank.heuristicMode);
             t += Time.deltaTime;
             if (t > 10)
             {

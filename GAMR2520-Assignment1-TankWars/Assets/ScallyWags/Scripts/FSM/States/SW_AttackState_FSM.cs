@@ -28,7 +28,7 @@ public class SW_AttackState_FSM : SW_BaseState_FSM
         {
             return typeof(SW_PatrolState_FSM);
         }
-        if (tank.TankCurrentHealth < 50)
+        if (tank.TankCurrentHealth < 30)
         {
             return typeof(SW_RetreatState_FSM);
         }

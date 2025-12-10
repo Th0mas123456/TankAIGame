@@ -33,7 +33,7 @@ public class SW_ResupplyState_FSM : SW_BaseState_FSM
          if (tank.VisibleConsumables.Count > 0)
          {
              tank.consumable = tank.VisibleConsumables.First().Key;
-             tank.FollowPathToWorldPoint(tank.consumable, 1f, tank.heuristicMode);
+             tank.FollowPathToWorldPoint(tank.consumable, 0.8f, tank.heuristicMode);
              t += Time.deltaTime;
              if (t > 10)
              {
@@ -41,12 +41,18 @@ public class SW_ResupplyState_FSM : SW_BaseState_FSM
                  t = 0;
              }
          }
+        else if (tank.TankCurrentHealth < 30 || tank.TankCurrentFuel < 30 || tank.TankCurrentAmmo < 3)
+        {
+            
+            tank.FollowPathToRandomWorldPoint(0.8f, tank.heuristicMode);
+            return typeof(SW_ResupplyState_FSM);
+        }
         else
         {
-            tank.FollowPathToRandomWorldPoint(1f, tank.heuristicMode);
+            return typeof(SW_PatrolState_FSM);
         }
 
-        return typeof(SW_ResupplyState_FSM);
+            return typeof(SW_ResupplyState_FSM);
     }
 }
     
