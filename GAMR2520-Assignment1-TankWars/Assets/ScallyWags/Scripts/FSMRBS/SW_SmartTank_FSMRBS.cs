@@ -53,6 +53,11 @@ public class SW_SmartTank_FSMRBS : AITank
         stats.Add("resupplyState", false);
     }
 
+    void InitialiseRules()
+    {
+        rules.AddRule(new Rule("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new Rule("attackState", "", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
+    }
     public void GeneratePathToWorldPoint(GameObject pointInWorld)
     {
         a_FindPathToPoint(pointInWorld);
