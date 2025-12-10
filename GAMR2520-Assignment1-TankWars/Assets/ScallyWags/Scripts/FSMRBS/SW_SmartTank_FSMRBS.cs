@@ -43,7 +43,9 @@ public class SW_SmartTank_FSMRBS : AITank
     void InitialiseStats()
 
     {
-        stats.Add("lowHealth", false);
+        stats.Add("lowHealth", false); // might have to replace that false?
+        stats.Add("lowAmmo", false);
+        stats.Add("lowFuel", false);
         stats.Add("targetSpotted", false);
         stats.Add("targetReached", false);
         stats.Add("retreatState", false);
@@ -51,12 +53,15 @@ public class SW_SmartTank_FSMRBS : AITank
         stats.Add("patrolState", false);
         stats.Add("attackState", false);
         stats.Add("resupplyState", false);
+        stats.Add("consumableSpotted", false);
+        stats.Add("consumableReached", false);
     }
 
     void InitialiseRules()
     {
         rules.AddRule(new Rule("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("attackState", "", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new Rule("attackState", "!targetSpotted", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new Rule("chaseState", "!targetSpotted", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
     }
     public void GeneratePathToWorldPoint(GameObject pointInWorld)
     {
