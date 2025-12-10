@@ -4,12 +4,12 @@ using System.Linq;
 using UnityEngine;
 using static AStar;
 using System;
-public class SW_AttackState : SW_BaseState
+public class SW_AttackState_FSM : SW_BaseState_FSM
 {
-    private SW_SmartTank tank;
+    private SW_SmartTank_FSM tank;
     private GameObject enemyTank;
     
-    public SW_AttackState(SW_SmartTank tank)
+    public SW_AttackState_FSM(SW_SmartTank_FSM tank)
     {
         this.tank = tank;
     }
@@ -17,7 +17,7 @@ public class SW_AttackState : SW_BaseState
     public override Type StateEnter()
     {
         Debug.Log("Entered attack State");
-        return typeof(SW_AttackState);
+        return typeof(SW_AttackState_FSM);
     }
     float t;
     public HeuristicMode heuristicMode;
@@ -26,11 +26,11 @@ public class SW_AttackState : SW_BaseState
         {
         if (tank.VisibleEnemyTanks.Count == 0)
         {
-            return typeof(SW_PatrolState);
+            return typeof(SW_PatrolState_FSM);
         }
         if (tank.TankCurrentHealth < 50)
         {
-            return typeof(SW_RetreatState);
+            return typeof(SW_RetreatState_FSM);
         }
        
         if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
@@ -47,12 +47,12 @@ public class SW_AttackState : SW_BaseState
                 }
                 else
                 {
-                    return typeof(SW_ChaseState);
+                    return typeof(SW_ChaseState_FSM);
                 }
             }
         }
            
-        return typeof(SW_AttackState);
+        return typeof(SW_AttackState_FSM);
 
         }
     public override Type StateExit()

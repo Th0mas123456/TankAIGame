@@ -6,13 +6,12 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static AStar;
 
-public class SW_ResupplyState : SW_BaseState
+public class SW_ResupplyState_FSM : SW_BaseState_FSM
 {
-    private SW_SmartTank tank;
-    public HeuristicMode heuristicMode;
+    private SW_SmartTank_FSM tank;
     float t;
 
-    public SW_ResupplyState(SW_SmartTank tank)
+    public SW_ResupplyState_FSM(SW_SmartTank_FSM tank)
     {
         this.tank = tank;
     }
@@ -20,7 +19,7 @@ public class SW_ResupplyState : SW_BaseState
     public override Type StateEnter()
     {
         Debug.Log("Entered Resupply State");
-        return typeof(SW_ResupplyState);
+        return typeof(SW_ResupplyState_FSM);
     }
 
     public override Type StateExit()
@@ -34,7 +33,7 @@ public class SW_ResupplyState : SW_BaseState
          if (tank.VisibleConsumables.Count > 0)
          {
              tank.consumable = tank.VisibleConsumables.First().Key;
-             tank.FollowPathToWorldPoint(tank.consumable, 1f, heuristicMode);
+             tank.FollowPathToWorldPoint(tank.consumable, 1f, tank.heuristicMode);
              t += Time.deltaTime;
              if (t > 10)
              {
@@ -44,10 +43,10 @@ public class SW_ResupplyState : SW_BaseState
          }
         else
         {
-            tank.FollowPathToRandomWorldPoint(1f, heuristicMode);
+            tank.FollowPathToRandomWorldPoint(1f, tank.heuristicMode);
         }
 
-            return typeof(SW_ResupplyState);
+        return typeof(SW_ResupplyState_FSM);
     }
 }
     

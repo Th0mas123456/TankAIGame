@@ -5,13 +5,12 @@ using System;
 using System.Linq;
 using static AStar;
 
-public class SW_PatrolState : SW_BaseState
+public class SW_PatrolState_FSM : SW_BaseState_FSM
 {
-    private SW_SmartTank tank;
+    private SW_SmartTank_FSM tank;
     private float t;
-    private HeuristicMode heuristicMode = HeuristicMode.Euclidean;
 
-    public SW_PatrolState(SW_SmartTank tank)
+    public SW_PatrolState_FSM(SW_SmartTank_FSM tank)
     {
         this.tank = tank;
     }
@@ -32,15 +31,15 @@ public class SW_PatrolState : SW_BaseState
     {
         if (tank.TankCurrentHealth < 50 || tank.TankCurrentFuel < 40 || tank.TankCurrentAmmo < 3)
         {
-            return typeof (SW_ResupplyState);
+            return typeof (SW_ResupplyState_FSM);
         }
         if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
         {
-            return typeof(SW_ChaseState);
+            return typeof(SW_ChaseState_FSM);
         }
         else
         {
-            tank.FollowPathToRandomWorldPoint(1f, heuristicMode);
+            tank.FollowPathToRandomWorldPoint(1f, tank.heuristicMode);
             t += Time.deltaTime;
             if (t > 10)
             {
@@ -49,6 +48,6 @@ public class SW_PatrolState : SW_BaseState
                 t = 0;
             }
         }
-        return typeof(SW_PatrolState);
+        return typeof(SW_PatrolState_FSM);
     }
 }

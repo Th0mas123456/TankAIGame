@@ -4,11 +4,11 @@ using UnityEngine;
 using System;
 using System.Linq;
 
-public class SW_StateMachine : MonoBehaviour
+public class SW_StateMachine_FSM : MonoBehaviour
 {
-    private Dictionary<Type, SW_BaseState> states;
-    public SW_BaseState currentState;
-    public SW_BaseState CurrentState
+    private Dictionary<Type, SW_BaseState_FSM> states;
+    public SW_BaseState_FSM currentState;
+    public SW_BaseState_FSM CurrentState
     {
         get
         {
@@ -20,7 +20,7 @@ public class SW_StateMachine : MonoBehaviour
         }
     }
 
-    public void SetStates(Dictionary<Type, SW_BaseState> states)
+    public void SetStates(Dictionary<Type, SW_BaseState_FSM> states)
     {
         this.states = states;
     }

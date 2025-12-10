@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using static AStar;
 
-public class SW_SmartTank : AITank
+public class SW_SmartTank_FSM : AITank
 {
     public GameObject enemyTank;
     public GameObject consumable;
@@ -26,14 +26,14 @@ public class SW_SmartTank : AITank
 
     private void InitializeStateMachine()
     {
-        Dictionary<Type, SW_BaseState> states = new Dictionary<Type, SW_BaseState>();
-        states.Add(typeof(SW_PatrolState), new SW_PatrolState(this));
-        states.Add(typeof(SW_ChaseState), new SW_ChaseState(this));
-        states.Add(typeof(SW_AttackState), new SW_AttackState(this));
-        states.Add(typeof(SW_RetreatState), new SW_RetreatState(this));
-        states.Add(typeof(SW_ResupplyState), new  SW_ResupplyState(this));
+        Dictionary<Type, SW_BaseState_FSM> states = new Dictionary<Type, SW_BaseState_FSM>();
+        states.Add(typeof(SW_PatrolState_FSM), new SW_PatrolState_FSM(this));
+        states.Add(typeof(SW_ChaseState_FSM), new SW_ChaseState_FSM(this));
+        states.Add(typeof(SW_AttackState_FSM), new SW_AttackState_FSM(this));
+        states.Add(typeof(SW_RetreatState_FSM), new SW_RetreatState_FSM(this));
+        states.Add(typeof(SW_ResupplyState_FSM), new  SW_ResupplyState_FSM(this));
 
-        GetComponent<SW_StateMachine>().SetStates(states);
+        GetComponent<SW_StateMachine_FSM>().SetStates(states);
     }
 
 
