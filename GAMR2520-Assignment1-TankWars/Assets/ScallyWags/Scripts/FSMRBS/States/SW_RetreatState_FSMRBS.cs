@@ -20,42 +20,33 @@ public class SW_RetreatState_FSMRBS : SW_BaseState_FSMRBS
     public override Type StateEnter()
     {
         Debug.Log("entered retreat state");
-        Debug.Log(tank.TankCurrentHealth);
+        tank.stats["patrolState"] = false;
+        tank.stats["chaseState"] = false;
+        tank.stats["attackState"] = false;
+        tank.stats["retreatState"] = true;
+        tank.stats["resupplyState"] = false;
         return typeof(SW_RetreatState_FSMRBS);
 
     }
 
     public override Type StateExit()
     {
+        tank.stats["retreatState"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
-        // no visible enemies, return to patrol
-        if (tank.VisibleEnemyTanks.Count == 0)
+        tank.retreat();
+
+        foreach (var item in tank.rules.GetRules)
         {
-            return typeof(SW_PatrolState_FSMRBS);
+            if (item.CheckRule(tank.stats) != null)
+            {
+                return item.CheckRule(tank.stats);
+            }
         }
-        tank.enemyTank = tank.VisibleEnemyTanks.First().Key;
 
-        if (tank.enemyTank == null)
-        {
-            return typeof(SW_PatrolState_FSMRBS);
-        }
-        float dist = Vector3.Distance(tank.transform.position, tank.enemyTank.transform.position);
-
-        // if within safe distance, return to patrolling
-        if (dist > safeDistance)
-        {
-            return typeof(SW_PatrolState_FSMRBS);
-        }
-        // retreat movement
-        //Vector3 dirAway = (tank.transform.position - tank.enemyTank.transform.position).normalized;
-
-        //tank.FollowPathToWorldPoint(retreatPoint, 1f, heuristicMode);
-        tank.FollowPathToRandomWorldPoint(1f, tank.heuristicMode);
-
-        return typeof(SW_RetreatState_FSMRBS);
+        return null;
     }
 }

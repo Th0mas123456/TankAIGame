@@ -8,7 +8,6 @@ using static AStar;
 public class SW_PatrolState_FSMRBS : SW_BaseState_FSMRBS
 {
     private SW_SmartTank_FSMRBS tank;
-    private float t;
 
     public SW_PatrolState_FSMRBS(SW_SmartTank_FSMRBS tank)
     {
@@ -17,38 +16,34 @@ public class SW_PatrolState_FSMRBS : SW_BaseState_FSMRBS
 
     public override Type StateEnter()
     {
-        Debug.Log("Entered Patrol State");
-        t = 0;
-        return null;
+        Debug.Log("Entered patrol state");
+        tank.stats["patrolState"] = true;
+        tank.stats["chaseState"] = false;
+        tank.stats["attackState"] = false;
+        tank.stats["retreatState"] = false;
+        tank.stats["resupplyState"] = false;
+        return typeof(SW_PatrolState_FSMRBS);
     }
 
     public override Type StateExit()
     {
+        tank.stats["patrolState"] = false;
+        tank.stats["noTarget"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
-        if (tank.TankCurrentHealth < 30 || tank.TankCurrentFuel < 30 || tank.TankCurrentAmmo < 3)
+        tank.patrolMap();
+        foreach (var item in tank.rules.GetRules)
         {
-            return typeof(SW_ResupplyState_FSMRBS);
-        }
-        if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
-        {
-            return typeof(SW_ChaseState_FSMRBS);
-        }
-        else
-        {
-            tank.FollowPathToRandomWorldPoint(0.5f, tank.heuristicMode);
-            t += Time.deltaTime;
-            if (t > 10)
+            if (item.CheckRule(tank.stats) != null)
             {
-                Debug.Log(t);
-                tank.GenerateNewRandomWorldPoint();
-                t = 0;
+                return item.CheckRule(tank.stats);
             }
         }
-        return typeof(SW_PatrolState_FSMRBS);
+
+        return null;
     }
 }
 

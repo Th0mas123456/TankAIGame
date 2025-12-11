@@ -19,41 +19,36 @@ public class SW_ResupplyState_FSMRBS : SW_BaseState_FSMRBS
     public override Type StateEnter()
     {
         Debug.Log("Entered Resupply State");
-        return typeof(SW_ResupplyState_FSMRBS);
+        tank.stats["patrolState"] = false;
+        tank.stats["chaseState"] = false;
+        tank.stats["attackState"] = false;
+        tank.stats["retreatState"] = false;
+        tank.stats["resupplyState"] = true;
+        return typeof(SW_ChaseState_FSMRBS);
     }
 
     public override Type StateExit()
     {
+        tank.stats["resupplyState"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
 
-        if (tank.VisibleConsumables.Count > 0)
+        tank.resupply();
+
+        foreach (var item in tank.rules.GetRules)
         {
-            tank.consumable = tank.VisibleConsumables.First().Key;
-            tank.FollowPathToWorldPoint(tank.consumable, 0.8f, tank.heuristicMode);
-            t += Time.deltaTime;
-            if (t > 10)
+            if (item.CheckRule(tank.stats) != null)
             {
-                tank.GenerateNewRandomWorldPoint();
-                t = 0;
+                return item.CheckRule(tank.stats);
             }
         }
-        else if (tank.TankCurrentHealth < 30 || tank.TankCurrentFuel < 30 || tank.TankCurrentAmmo < 3)
-        {
 
-            tank.FollowPathToRandomWorldPoint(0.8f, tank.heuristicMode);
-            return typeof(SW_ResupplyState_FSMRBS);
-        }
-        else
-        {
-            return typeof(SW_PatrolState_FSMRBS);
-        }
-
-        return typeof(SW_ResupplyState_FSMRBS);
+        return null;
     }
+
 }
 
 

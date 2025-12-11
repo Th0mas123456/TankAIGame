@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using static AStar;
+using System.Linq;
 
 public class SW_SmartTank_FSMRBS : AITank
 {
@@ -10,6 +11,7 @@ public class SW_SmartTank_FSMRBS : AITank
     public GameObject consumable;
     public GameObject enemyBase;
     public HeuristicMode heuristicMode;
+    float t;
 
 
     public Dictionary<string, bool> stats = new Dictionary<string, bool>();
@@ -45,19 +47,15 @@ public class SW_SmartTank_FSMRBS : AITank
 
     {
         stats.Add("lowHealth", false);
-        stats.Add("lowAmmo", false);
-        stats.Add("lowFuel", false);
         stats.Add("needResupply", false);
         stats.Add("targetSpotted", false);
         stats.Add("targetReached", false);
-        stats.Add("noTarget", false);
+        stats.Add("noTarget", true);
         stats.Add("retreatState", false);
         stats.Add("chaseState", false);
-        stats.Add("patrolState", false);
+        stats.Add("patrolState", true);
         stats.Add("attackState", false);
         stats.Add("resupplyState", false);
-        stats.Add("consumableSpotted", false);
-        stats.Add("consumableReached", false);
     }
 
     void InitialiseRules()
@@ -65,10 +63,10 @@ public class SW_SmartTank_FSMRBS : AITank
         rules.AddRule(new Rule("patrolState", "needResupply", typeof(SW_ResupplyState_FSMRBS), Rule.Predicate.And));
         rules.AddRule(new Rule("patrolState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
 
-        rules.AddRule(new Rule("chaseState", "targetSpotted", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.nAnd));
+        rules.AddRule(new Rule("chaseState", "noTarget", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
         rules.AddRule(new Rule("chaseState", "targetReached", typeof(SW_AttackState_FSMRBS), Rule.Predicate.And));
 
-        rules.AddRule(new Rule("attackState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
+        //rules.AddRule(new Rule("attackState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
         rules.AddRule(new Rule("attackState", "noTarget", typeof(SW_PatrolState_FSMRBS),Rule.Predicate.And));
         rules.AddRule(new Rule("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
 
@@ -76,6 +74,129 @@ public class SW_SmartTank_FSMRBS : AITank
 
         rules.AddRule(new Rule("resupplyState", "needResupply", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.nAnd));
     }
+
+
+    public void targetReached()
+    {
+        if (VisibleEnemyTanks.Count > 0)
+        {
+            GameObject enemyTank = VisibleEnemyTanks.First().Key;
+
+            if (Vector3.Distance(transform.position, enemyTank.transform.position) < 25f)
+                stats["targetReached"] = true;
+            else
+                stats["targetReached"] = false;
+        }
+        else
+        {
+            stats["targetReached"] = false;
+        }
+    }
+
+    public void targetSpotted()
+    {
+        if (VisibleEnemyTanks.Count > 0)
+        {
+            stats["noTarget"] = false;
+            stats["targetSpotted"] = true;
+        }
+        else
+        {
+            stats["noTarget"] = true;
+            stats["targetSpotted"] = false;
+        }
+    }
+
+    public void attackTarget()
+    {
+        enemyTank = VisibleEnemyTanks.First().Key;
+        TurretFireAtPoint(enemyTank);
+        checkHealth();
+        targetReached();
+    }
+
+    public void patrolMap()
+    {
+        FollowPathToRandomWorldPoint(0.5f, heuristicMode);
+        t += Time.deltaTime;
+        if (t > 10)
+        {
+            GenerateNewRandomWorldPoint();
+            t = 0;
+        }
+        targetSpotted();
+        targetReached();
+        checkResupply();
+        checkHealth();
+    }
+
+    public void chaseTarget()
+    {
+        if (VisibleEnemyTanks.Count > 0)
+        {
+            enemyTank = VisibleEnemyTanks.First().Key;
+            FollowPathToWorldPoint(enemyTank, 1f, heuristicMode);
+        }
+        checkHealth();
+        targetSpotted();
+        targetReached();
+    }
+
+    public void checkResupply()
+    {
+        if(TankCurrentHealth < 30 || TankCurrentFuel < 30 || TankCurrentAmmo < 3)
+        {
+            stats["needResupply"] = true;
+        }
+        else
+        {
+            stats["needResupply"] = false;
+        }
+    }
+    public void resupply()
+    {
+        if (VisibleConsumables.Count > 0)
+        {
+            consumable = VisibleConsumables.First().Key;
+            FollowPathToWorldPoint(consumable, 0.8f, heuristicMode);
+            t += Time.deltaTime;
+            if (t > 10)
+            {
+                GenerateNewRandomWorldPoint();
+                t = 0;
+            }
+        }
+        else if (TankCurrentHealth < 30 || TankCurrentFuel < 30 || TankCurrentAmmo < 3)
+        {
+
+            FollowPathToRandomWorldPoint(0.8f, heuristicMode);
+        }
+        checkResupply();
+    }
+
+    public void retreat()
+    {
+        FollowPathToRandomWorldPoint(1f, heuristicMode);
+        checkHealth();
+        targetSpotted();
+        targetReached();
+        
+    }
+
+    public void checkHealth()
+    {
+        if (TankCurrentHealth < 30)
+        {
+            stats["lowHealth"] = true;
+        }
+        else
+        {
+            stats["lowHealth"] = false;
+        }
+    }
+
+
+
     public void GeneratePathToWorldPoint(GameObject pointInWorld)
     {
         a_FindPathToPoint(pointInWorld);

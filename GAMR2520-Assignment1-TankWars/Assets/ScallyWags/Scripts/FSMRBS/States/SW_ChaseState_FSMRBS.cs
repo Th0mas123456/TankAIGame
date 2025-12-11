@@ -17,36 +17,32 @@ public class SW_ChaseState_FSMRBS : SW_BaseState_FSMRBS
     public override Type StateEnter()
     {
         Debug.Log("Entered Chase State");
+        tank.stats["patrolState"] = false;
+        tank.stats["chaseState"] = true;
+        tank.stats["attackState"] = false;
+        tank.stats["retreatState"] = false;
+        tank.stats["resupplyState"] = false;
         return typeof(SW_ChaseState_FSMRBS);
     }
 
     public override Type StateExit()
     {
+        tank.stats["chaseState"] = false;
         return null;
     }
 
     public override Type StateUpdate()
     {
-        if (tank.VisibleEnemyTanks.Count == 0)
+        tank.chaseTarget();
+
+        foreach (var item in tank.rules.GetRules)
         {
-            return typeof(SW_PatrolState_FSMRBS);
-        }
-        tank.enemyTank = tank.VisibleEnemyTanks.First().Key;
-        if (tank.enemyTank != null)
-        {
-            if (Vector3.Distance(tank.transform.position, tank.enemyTank.transform.position) < 25f)
+            if (item.CheckRule(tank.stats) != null)
             {
-                return typeof(SW_AttackState_FSMRBS);
-            }
-            else
-            {
-                tank.FollowPathToWorldPoint(tank.enemyTank, 1f, tank.heuristicMode);
-                return typeof(SW_ChaseState_FSMRBS);
+                return item.CheckRule(tank.stats);
             }
         }
-        else
-        {
-            return typeof(SW_PatrolState_FSMRBS);
-        }
+
+        return null;
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using UnityEngine;
 using static AStar;
 using System;
+using System.Data;
 public class SW_AttackState_FSMRBS : SW_BaseState_FSMRBS
 {
     private SW_SmartTank_FSMRBS tank;
-    private GameObject enemyTank;
 
     public SW_AttackState_FSMRBS(SW_SmartTank_FSMRBS tank)
     {
@@ -17,46 +17,33 @@ public class SW_AttackState_FSMRBS : SW_BaseState_FSMRBS
     public override Type StateEnter()
     {
         Debug.Log("Entered attack State");
+        tank.stats["patrolState"] = false;
+        tank.stats["chaseState"] = false;
+        tank.stats["attackState"] = true;
+        tank.stats["retreatState"] = false;
+        tank.stats["resupplyState"] = false;
         return typeof(SW_AttackState_FSMRBS);
     }
-    float t;
-    public HeuristicMode heuristicMode;
 
     public override Type StateUpdate()
     {
-        if (tank.VisibleEnemyTanks.Count == 0)
-        {
-            return typeof(SW_PatrolState_FSMRBS);
-        }
-        if (tank.TankCurrentHealth < 30)
-        {
-            return typeof(SW_RetreatState_FSMRBS);
-        }
+        tank.attackTarget();
 
-        if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null)
+
+        foreach (var item in tank.rules.GetRules)
         {
-            enemyTank = tank.VisibleEnemyTanks.First().Key;
-            if (enemyTank != null)
+            if (item.CheckRule(tank.stats) != null)
             {
-                float dist = Vector3.Distance(tank.transform.position, enemyTank.transform.position);
-
-                if (dist < 25f)
-                {
-                    tank.TurretFireAtPoint(enemyTank);
-
-                }
-                else
-                {
-                    return typeof(SW_ChaseState_FSMRBS);
-                }
+                return item.CheckRule(tank.stats);
             }
         }
 
-        return typeof(SW_AttackState_FSMRBS);
+        return null;
 
     }
     public override Type StateExit()
     {
+        tank.stats["attackState"] = false;
         return null;
     }
 }
