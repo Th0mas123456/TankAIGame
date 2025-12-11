@@ -18,6 +18,7 @@ public class SW_SmartTank_FSMRBS : AITank
     {
         InitializeStateMachine();
         InitialiseStats();
+        InitialiseRules();
     }
 
     public override void AITankUpdate()
@@ -43,11 +44,13 @@ public class SW_SmartTank_FSMRBS : AITank
     void InitialiseStats()
 
     {
-        stats.Add("lowHealth", false); // might have to replace that false?
+        stats.Add("lowHealth", false);
         stats.Add("lowAmmo", false);
         stats.Add("lowFuel", false);
+        stats.Add("needResupply", false);
         stats.Add("targetSpotted", false);
         stats.Add("targetReached", false);
+        stats.Add("noTarget", false);
         stats.Add("retreatState", false);
         stats.Add("chaseState", false);
         stats.Add("patrolState", false);
@@ -59,9 +62,19 @@ public class SW_SmartTank_FSMRBS : AITank
 
     void InitialiseRules()
     {
+        rules.AddRule(new Rule("patrolState", "needResupply", typeof(SW_ResupplyState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new Rule("patrolState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
+
+        rules.AddRule(new Rule("chaseState", "targetSpotted", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.nAnd));
+        rules.AddRule(new Rule("chaseState", "targetReached", typeof(SW_AttackState_FSMRBS), Rule.Predicate.And));
+
+        rules.AddRule(new Rule("attackState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new Rule("attackState", "noTarget", typeof(SW_PatrolState_FSMRBS),Rule.Predicate.And));
         rules.AddRule(new Rule("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("attackState", "!targetSpotted", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("chaseState", "!targetSpotted", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
+
+        rules.AddRule(new Rule("retreatState", "noTarget", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
+
+        rules.AddRule(new Rule("resupplyState", "needResupply", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.nAnd));
     }
     public void GeneratePathToWorldPoint(GameObject pointInWorld)
     {
