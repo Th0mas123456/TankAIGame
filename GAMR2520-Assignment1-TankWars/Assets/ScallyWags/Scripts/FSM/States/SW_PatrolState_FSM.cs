@@ -33,7 +33,7 @@ public class SW_PatrolState_FSM : SW_BaseState_FSM // Patrol state references of
         {
             return typeof (SW_ResupplyState_FSM); // Switch to resupply state
         }
-        if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null) // If there's more than 0 visible enemy AND it is the first tank then enter chase state
+        if (tank.VisibleEnemyTanks.Count > 0 && tank.VisibleEnemyTanks.First().Key != null) // If there's more than 0 visible enemy AND it is the first enemy tank it (Scallywag) sees then enter chase state
         {
             return typeof(SW_ChaseState_FSM); // Switch to chase state
         }
