@@ -36,7 +36,7 @@ public class SW_ResupplyState_FSM : SW_BaseState_FSM // Resupply state reference
          {
              tank.consumable = tank.VisibleConsumables.First().Key; // Get the first consumable from the list
              tank.FollowPathToWorldPoint(tank.consumable, 0.8f, tank.heuristicMode); // Moves / follows toward the consumable
-             t += Time.deltaTime; // Timer
+             t += Time.deltaTime; // Timer starts
              if (t > 10) // If timer goes over 10 seconds
              {
                  tank.GenerateNewRandomWorldPoint(); // Generate new random point in the world
