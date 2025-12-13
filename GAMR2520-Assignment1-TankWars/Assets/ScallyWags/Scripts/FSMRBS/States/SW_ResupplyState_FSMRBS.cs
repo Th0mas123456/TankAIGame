@@ -8,14 +8,15 @@ using static AStar;
 
 public class SW_ResupplyState_FSMRBS : SW_BaseState_FSMRBS
 {
-    private SW_SmartTank_FSMRBS tank;
-    float t;
+    private SW_SmartTank_FSMRBS tank;//referance to the tank script
 
+    //constructor of the state
     public SW_ResupplyState_FSMRBS(SW_SmartTank_FSMRBS tank)
     {
         this.tank = tank;
     }
 
+    //upon state entry it sets all the state stats to false except the current one to prevent errors
     public override Type StateEnter()
     {
         Debug.Log("Entered Resupply State");
@@ -27,6 +28,7 @@ public class SW_ResupplyState_FSMRBS : SW_BaseState_FSMRBS
         return typeof(SW_ChaseState_FSMRBS);
     }
 
+    //exits the state and sets the state stat to false
     public override Type StateExit()
     {
         tank.stats["resupplyState"] = false;
@@ -36,7 +38,9 @@ public class SW_ResupplyState_FSMRBS : SW_BaseState_FSMRBS
     public override Type StateUpdate()
     {
 
-        tank.resupply();
+        tank.resupply();//runs the function thats in smart tank
+
+        //goes through all the rules and checks the rules with the stats to see if the state needs chaging
 
         foreach (var item in tank.rules.GetRules)
         {

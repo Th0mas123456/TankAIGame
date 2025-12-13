@@ -7,13 +7,15 @@ using static AStar;
 
 public class SW_ChaseState_FSMRBSBT : SW_BaseState_FSMRBSBT
 {
-    private SW_SmartTank_FSMRBSBT tank;
+    private SW_SmartTank_FSMRBSBT tank;//referance to the tank script
 
+    //constructor of the state
     public SW_ChaseState_FSMRBSBT(SW_SmartTank_FSMRBSBT tank)
     {
         this.tank = tank;
     }
 
+    //upon state entry it sets all the state stats to false except the current one to prevent errors
     public override Type StateEnter()
     {
         Debug.Log("Entered Chase State");
@@ -25,6 +27,7 @@ public class SW_ChaseState_FSMRBSBT : SW_BaseState_FSMRBSBT
         return typeof(SW_ChaseState_FSMRBSBT);
     }
 
+    //exits the state and sets the state stat to false
     public override Type StateExit()
     {
         tank.stats["chaseState"] = false;
@@ -33,7 +36,9 @@ public class SW_ChaseState_FSMRBSBT : SW_BaseState_FSMRBSBT
 
     public override Type StateUpdate()
     {
-        tank.chaseTarget();
+        tank.chaseTarget();//runs the function thats in smart tank
+
+        //goes through all the rules and checks the rules with the stats to see if the state needs chaging
 
         foreach (var item in tank.rules.GetRules)
         {

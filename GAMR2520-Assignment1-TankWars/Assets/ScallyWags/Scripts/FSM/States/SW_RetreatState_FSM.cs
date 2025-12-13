@@ -8,10 +8,11 @@ using System.Runtime.CompilerServices;
 
 public class SW_RetreatState_FSM : SW_BaseState_FSM
 {
-    private SW_SmartTank_FSM tank;
+    private SW_SmartTank_FSM tank; //tank object so the state can use and return instructions for the tank
 
-    public float safeDistance = 40f;
+    public float safeDistance = 40f; //float used to check if the tank is safe
 
+    //states constructor
     public SW_RetreatState_FSM(SW_SmartTank_FSM tank)
     {
         this.tank = tank;
@@ -19,8 +20,6 @@ public class SW_RetreatState_FSM : SW_BaseState_FSM
     
     public override Type StateEnter()
     {
-        Debug.Log("entered retreat state");
-        Debug.Log(tank.TankCurrentHealth);
         return typeof(SW_RetreatState_FSM);
         
     }
@@ -51,9 +50,6 @@ public class SW_RetreatState_FSM : SW_BaseState_FSM
             return typeof(SW_PatrolState_FSM);
         }
         // retreat movement
-        //Vector3 dirAway = (tank.transform.position - tank.enemyTank.transform.position).normalized;
-
-        //tank.FollowPathToWorldPoint(retreatPoint, 1f, heuristicMode);
         tank.FollowPathToRandomWorldPoint(1f, tank.heuristicMode);
 
         return typeof(SW_RetreatState_FSM);

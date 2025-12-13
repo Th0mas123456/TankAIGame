@@ -6,9 +6,15 @@ using static AStar;
 
 public class SW_SmartTank_FSM : AITank
 {
+    // Reference to the currently targeted enemy tank
     public GameObject enemyTank;
+
+    // Reference to a consumable (ammo / fuel / health pickup)
     public GameObject consumable;
+
+    // Reference to the enemy base
     public GameObject enemyBase;
+
     public HeuristicMode heuristicMode;    
 
     public override void AITankStart()
@@ -24,6 +30,7 @@ public class SW_SmartTank_FSM : AITank
     {
     }
 
+    //Adds all of the used states to a dictionary so that the statemachine can cycle through them
     private void InitializeStateMachine()
     {
         Dictionary<Type, SW_BaseState_FSM> states = new Dictionary<Type, SW_BaseState_FSM>();

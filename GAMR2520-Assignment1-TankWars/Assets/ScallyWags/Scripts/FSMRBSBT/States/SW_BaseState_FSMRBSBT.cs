@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+//base class used for all states
 public abstract class SW_BaseState_FSMRBSBT
 {
     public abstract Type StateUpdate();

@@ -5,13 +5,15 @@ using UnityEngine.XR;
 
 public class SW_BTSequence : SW_BTBaseNode
 {
-    protected List<SW_BTBaseNode> btNodes = new List<SW_BTBaseNode>();
+    protected List<SW_BTBaseNode> btNodes = new List<SW_BTBaseNode>(); //list of BT nodes
 
+    //constructor
     public SW_BTSequence(List<SW_BTBaseNode> btNodes)
     {
         this.btNodes = btNodes;
     }
 
+    //Evaluates if the state of the node is failure or success and either breaks the switch or continues nodes in the given sequence
     public override SW_BTNodeState Evaluate()
     {
         bool failed = false;

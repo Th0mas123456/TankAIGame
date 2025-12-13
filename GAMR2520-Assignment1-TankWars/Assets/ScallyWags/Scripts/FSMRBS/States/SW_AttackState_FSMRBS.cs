@@ -7,13 +7,15 @@ using System;
 using System.Data;
 public class SW_AttackState_FSMRBS : SW_BaseState_FSMRBS
 {
-    private SW_SmartTank_FSMRBS tank;
+    private SW_SmartTank_FSMRBS tank; //referance to the tank script
 
+    //constructor of the state
     public SW_AttackState_FSMRBS(SW_SmartTank_FSMRBS tank)
     {
         this.tank = tank;
     }
 
+    //upon state entry it sets all the state stats to false except the current one to prevent errors
     public override Type StateEnter()
     {
         Debug.Log("Entered attack State");
@@ -27,9 +29,9 @@ public class SW_AttackState_FSMRBS : SW_BaseState_FSMRBS
 
     public override Type StateUpdate()
     {
-        tank.attackTarget();
+        tank.attackTarget(); //runs the function thats in smart tank
 
-
+        //goes through all the rules and checks the rules with the stats to see if the state needs chaging
         foreach (var item in tank.rules.GetRules)
         {
             if (item.CheckRule(tank.stats) != null)
@@ -41,6 +43,8 @@ public class SW_AttackState_FSMRBS : SW_BaseState_FSMRBS
         return null;
 
     }
+
+    //exits the state and sets the state stat to false
     public override Type StateExit()
     {
         tank.stats["attackState"] = false;

@@ -8,11 +8,18 @@ using UnityEngine.XR;
 
 public class SW_SmartTank_FSMRBSBT : AITank
 {
+    // Reference to the currently targeted enemy tank
     public GameObject enemyTank;
+
+    // Reference to a consumable (ammo / fuel / health pickup)
     public GameObject consumable;
+
+    // Reference to the enemy base
     public GameObject enemyBase;
     public HeuristicMode heuristicMode;
     float t;
+    
+    //Behaviour Tree actions and sequences being delared
     public SW_BTAction healthCheck;
     public SW_BTAction ammoCheck;
     public SW_BTAction fuelCheck;
@@ -22,7 +29,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
 
 
 
-
+    //dictionary that will hold all of the stats that the rules will use to change states
     public Dictionary<string, bool> stats = new Dictionary<string, bool>();
     public SW_RulesBT rules = new SW_RulesBT();
     public override void AITankStart()
@@ -41,6 +48,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
     {
     }
 
+    //Adds all of the used states to a dictionary so that the statemachine can cycle through them
     private void InitializeStateMachine()
     {
         Dictionary<Type, SW_BaseState_FSMRBSBT> states = new Dictionary<Type, SW_BaseState_FSMRBSBT>();
@@ -53,6 +61,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         GetComponent<SW_StateMachine_FSMRBSBT>().SetStates(states);
     }
 
+    //Adds all of the stats the rules use to changes states
     void InitialiseStats()
 
     {
@@ -70,6 +79,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         stats.Add("resupplyState", false);
     }
 
+    //Adds all the rules so that it knows when to change states
     void InitialiseRules()
     {
         rules.AddRule(new SW_RuleBT("patrolState", "needResupply", typeof(SW_ResupplyState_FSMRBSBT), SW_RuleBT.Predicate.And));
@@ -86,6 +96,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         rules.AddRule(new SW_RuleBT("resupplyState", "needResupply", typeof(SW_PatrolState_FSMRBSBT), SW_RuleBT.Predicate.nAnd));
     }
 
+    //creates the actions and sequences of the behaviour tree so that it can check if actions or successes and can list importance of certain actions
     public void InitialiseBT()
     {
         healthCheck = new SW_BTAction(HealthCheck);
@@ -96,6 +107,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         regenSequence = new SW_BTSequence(new List<SW_BTBaseNode> { healthCheck, fuelCheck , ammoCheck });
     }
 
+    //checks if the target has been reached and sets the stat accordingly
     public void targetReached()
     {
         if (VisibleEnemyTanks.Count > 0)
@@ -113,6 +125,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         }
     }
 
+    //checks if the target has been spotted and sets the stat accordingly
     public void targetSpotted()
     {
         if (VisibleEnemyTanks.Count > 0)
@@ -127,6 +140,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         }
     }
 
+    //fires a projectile at the target
     public void attackTarget()
     {
         enemyTank = VisibleEnemyTanks.First().Key;
@@ -135,6 +149,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         targetReached();
     }
 
+    //moves around the map generating new world points to move to every 10 seconds
     public void patrolMap()
     {
         FollowPathToRandomWorldPoint(0.5f, heuristicMode);
@@ -150,6 +165,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         checkHealth();
     }
 
+    //chases after the enemy position the checks if it should change states if it gets close or loses it
     public void chaseTarget()
     {
         if (VisibleEnemyTanks.Count > 0)
@@ -162,6 +178,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         targetReached();
     }
 
+    //checks if it is low on supplies and adjust the stat based on that
     public void checkResupply()
     {
         if (TankCurrentHealth < 30 || TankCurrentFuel < 30 || TankCurrentAmmo < 3)
@@ -179,6 +196,8 @@ public class SW_SmartTank_FSMRBSBT : AITank
             stats["needResupply"] = false;
         }
     }
+
+    //searchs for consumables then picks them up if it finds them
     public void resupply()
     {
         if (VisibleConsumables.Count > 0)
@@ -200,6 +219,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         checkResupply();
     }
 
+    //runs in a random direction away from the enemy
     public void retreat()
     {
         FollowPathToRandomWorldPoint(1f, heuristicMode);
@@ -209,6 +229,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
 
     }
 
+    //checks if health is low and sets the state based on that
     public void checkHealth()
     {
         if (TankCurrentHealth < 30)
@@ -221,6 +242,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         }
     }
 
+    //uses the stat to check if the BTnode was a failure or success
     public SW_BTNodeState HealthCheck()
     {
         if (stats["lowHealth"])
@@ -233,6 +255,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         }
     }
 
+    //uses the stat to check if the BTnode was a failure or success
     public SW_BTNodeState AmmoCheck()
     {
         if (stats["lowAmmo"])
@@ -245,6 +268,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         }
     }
 
+    //uses the stat to check if the BTnode was a failure or success
     public SW_BTNodeState FuelCheck()
     {
         if (stats["lowFuel"])
@@ -257,6 +281,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         }
     }
 
+    //uses the stat to check if the BTnode was a failure or success
     public SW_BTNodeState TargetSpottedCheck()
     {
         if (stats["targetSpotted"])
@@ -270,7 +295,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
     }
 
 
-
+    //uses the stat to check if the BTnode was a failure or success
     public SW_BTNodeState TargetReachedCheck()
     {
         if (stats["targetReached"])

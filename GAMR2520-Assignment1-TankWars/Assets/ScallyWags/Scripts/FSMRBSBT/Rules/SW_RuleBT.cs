@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 public class SW_RuleBT
 {
-    public string antecedentA;
-    public string antecedentB;
-    public Type consequentState;
-    public Predicate compare;
+    public string antecedentA; //condition1
+    public string antecedentB; //condition2
+    public Type consequentState;//what state it will turn into
+    public Predicate compare; //weather its an And, Or, nAnd 
     public enum Predicate
     { And, Or, nAnd }
 
+    //constructor for the rule
     public SW_RuleBT(string antecedentA, string antecedentB, Type consequentState, Predicate compare)
     {
         this.antecedentA = antecedentA;
@@ -18,6 +19,7 @@ public class SW_RuleBT
         this.compare = compare;
     }
 
+    //performs the check on the rule to see if its true and will return the state or false and return nothing
     public Type CheckRule(Dictionary<string, bool> stats)
     {
         bool antecedentABool = stats[antecedentA];
