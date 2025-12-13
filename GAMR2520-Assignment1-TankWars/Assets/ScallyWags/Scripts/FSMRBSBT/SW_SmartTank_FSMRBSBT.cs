@@ -12,10 +12,18 @@ public class SW_SmartTank_FSMRBSBT : AITank
     public GameObject enemyBase;
     public HeuristicMode heuristicMode;
     float t;
+    public SW_BTAction healthCheck;
+    public SW_BTAction ammoCheck;
+    public SW_BTAction fuelCheck;
+    public SW_BTAction targetSpottedCheck;
+    public SW_BTAction targetReachedCheck;
+    public SW_BTSequence regenSequence;
+
+
 
 
     public Dictionary<string, bool> stats = new Dictionary<string, bool>();
-    public Rules rules = new Rules();
+    public SW_RulesBT rules = new SW_RulesBT();
     public override void AITankStart()
     {
         InitializeStateMachine();
@@ -40,7 +48,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         states.Add(typeof(SW_RetreatState_FSMRBSBT), new SW_RetreatState_FSMRBSBT(this));
         states.Add(typeof(SW_ResupplyState_FSMRBSBT), new SW_ResupplyState_FSMRBSBT(this));
 
-        GetComponent<SW_StateMachine_FSMRBS>().SetStates(states);
+        GetComponent<SW_StateMachine_FSMRBSBT>().SetStates(states);
     }
 
     void InitialiseStats()
@@ -60,20 +68,29 @@ public class SW_SmartTank_FSMRBSBT : AITank
 
     void InitialiseRules()
     {
-        rules.AddRule(new Rule("patrolState", "needResupply", typeof(SW_ResupplyState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("patrolState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_RuleBT("patrolState", "needResupply", typeof(SW_ResupplyState_FSMRBSBT), SW_RuleBT.Predicate.And));
+        rules.AddRule(new SW_RuleBT("patrolState", "targetSpotted", typeof(SW_ChaseState_FSMRBSBT), SW_RuleBT.Predicate.And));
 
-        rules.AddRule(new Rule("chaseState", "noTarget", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("chaseState", "targetReached", typeof(SW_AttackState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_RuleBT("chaseState", "noTarget", typeof(SW_PatrolState_FSMRBSBT), SW_RuleBT.Predicate.And));
+        rules.AddRule(new SW_RuleBT("chaseState", "targetReached", typeof(SW_AttackState_FSMRBSBT), SW_RuleBT.Predicate.And));
 
-        rules.AddRule(new Rule("attackState", "noTarget", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_RuleBT("attackState", "noTarget", typeof(SW_PatrolState_FSMRBSBT), SW_RuleBT.Predicate.And));
+        rules.AddRule(new SW_RuleBT("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBSBT), SW_RuleBT.Predicate.And));
 
-        rules.AddRule(new Rule("retreatState", "noTarget", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_RuleBT("retreatState", "noTarget", typeof(SW_PatrolState_FSMRBSBT), SW_RuleBT.Predicate.And));
 
-        rules.AddRule(new Rule("resupplyState", "needResupply", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.nAnd));
+        rules.AddRule(new SW_RuleBT("resupplyState", "needResupply", typeof(SW_PatrolState_FSMRBSBT), SW_RuleBT.Predicate.nAnd));
     }
 
+    public void InitialiseBT()
+    {
+        healthCheck = new SW_BTAction(HealthCheck);
+        ammoCheck = new SW_BTAction(AmmoCheck);
+        fuelCheck = new SW_BTAction(FuelCheck);
+        targetSpottedCheck = new SW_BTAction(TargetSpottedCheck);
+        targetReachedCheck = new SW_BTAction(TargetReachedCheck);
+        regenSequence = new SW_BTSequence(new List<SW_BTBaseNode> { healthCheck, fuelCheck , ammoCheck });
+    }
 
     public void targetReached()
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-public class Rule
+public class SW_RuleBT
 {
     public string antecedentA;
     public string antecedentB;
@@ -10,7 +10,7 @@ public class Rule
     public enum Predicate
     { And, Or, nAnd }
 
-    public Rule(string antecedentA, string antecedentB, Type consequentState, Predicate compare)
+    public SW_RuleBT(string antecedentA, string antecedentB, Type consequentState, Predicate compare)
     {
         this.antecedentA = antecedentA;
         this.antecedentB = antecedentB;

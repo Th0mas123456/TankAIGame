@@ -15,7 +15,7 @@ public class SW_SmartTank_FSMRBS : AITank
 
 
     public Dictionary<string, bool> stats = new Dictionary<string, bool>();
-    public Rules rules = new Rules();
+    public SW_Rules rules = new SW_Rules();
     public override void AITankStart()
     {
         InitializeStateMachine();
@@ -60,19 +60,19 @@ public class SW_SmartTank_FSMRBS : AITank
 
     void InitialiseRules()
     {
-        rules.AddRule(new Rule("patrolState", "needResupply", typeof(SW_ResupplyState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("patrolState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_Rule("patrolState", "needResupply", typeof(SW_ResupplyState_FSMRBS), SW_Rule.Predicate.And));
+        rules.AddRule(new SW_Rule("patrolState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), SW_Rule.Predicate.And));
 
-        rules.AddRule(new Rule("chaseState", "noTarget", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("chaseState", "targetReached", typeof(SW_AttackState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_Rule("chaseState", "noTarget", typeof(SW_PatrolState_FSMRBS), SW_Rule.Predicate.And));
+        rules.AddRule(new SW_Rule("chaseState", "targetReached", typeof(SW_AttackState_FSMRBS), SW_Rule.Predicate.And));
 
         //rules.AddRule(new Rule("attackState", "targetSpotted", typeof(SW_ChaseState_FSMRBS), Rule.Predicate.And));
-        rules.AddRule(new Rule("attackState", "noTarget", typeof(SW_PatrolState_FSMRBS),Rule.Predicate.And));
-        rules.AddRule(new Rule("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_Rule("attackState", "noTarget", typeof(SW_PatrolState_FSMRBS), SW_Rule.Predicate.And));
+        rules.AddRule(new SW_Rule("attackState", "lowHealth", typeof(SW_RetreatState_FSMRBS), SW_Rule.Predicate.And));
 
-        rules.AddRule(new Rule("retreatState", "noTarget", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.And));
+        rules.AddRule(new SW_Rule("retreatState", "noTarget", typeof(SW_PatrolState_FSMRBS), SW_Rule.Predicate.And));
 
-        rules.AddRule(new Rule("resupplyState", "needResupply", typeof(SW_PatrolState_FSMRBS), Rule.Predicate.nAnd));
+        rules.AddRule(new SW_Rule("resupplyState", "needResupply", typeof(SW_PatrolState_FSMRBS), SW_Rule.Predicate.nAnd));
     }
 
 
