@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using static AStar;
 using System.Linq;
+using UnityEngine.XR;
 
 public class SW_SmartTank_FSMRBSBT : AITank
 {
@@ -29,6 +30,7 @@ public class SW_SmartTank_FSMRBSBT : AITank
         InitializeStateMachine();
         InitialiseStats();
         InitialiseRules();
+        InitialiseBT();
     }
 
     public override void AITankUpdate()
@@ -55,6 +57,8 @@ public class SW_SmartTank_FSMRBSBT : AITank
 
     {
         stats.Add("lowHealth", false);
+        stats.Add("lowFuel", false);
+        stats.Add("lowAmmo", false);
         stats.Add("needResupply", false);
         stats.Add("targetSpotted", false);
         stats.Add("targetReached", false);
@@ -162,10 +166,16 @@ public class SW_SmartTank_FSMRBSBT : AITank
     {
         if (TankCurrentHealth < 30 || TankCurrentFuel < 30 || TankCurrentAmmo < 3)
         {
+            stats["lowHealth"] = true;
+            stats["lowFuel"] = true;
+            stats["lowAmmo"] = true;
             stats["needResupply"] = true;
         }
         else
         {
+            stats["lowHealth"] = false;
+            stats["lowFuel"] = false;
+            stats["lowAmmo"] = false;
             stats["needResupply"] = false;
         }
     }
@@ -211,7 +221,67 @@ public class SW_SmartTank_FSMRBSBT : AITank
         }
     }
 
+    public SW_BTNodeState HealthCheck()
+    {
+        if (stats["lowHealth"])
+        {
+            return SW_BTNodeState.FAILURE;
+        }
+        else
+        {
+            return SW_BTNodeState.SUCCESS;
+        }
+    }
 
+    public SW_BTNodeState AmmoCheck()
+    {
+        if (stats["lowAmmo"])
+        {
+            return SW_BTNodeState.FAILURE;
+        }
+        else
+        {
+            return SW_BTNodeState.SUCCESS;
+        }
+    }
+
+    public SW_BTNodeState FuelCheck()
+    {
+        if (stats["lowFuel"])
+        {
+            return SW_BTNodeState.FAILURE;
+        }
+        else
+        {
+            return SW_BTNodeState.SUCCESS;
+        }
+    }
+
+    public SW_BTNodeState TargetSpottedCheck()
+    {
+        if (stats["targetSpotted"])
+        { 
+            return SW_BTNodeState.SUCCESS;
+        }
+        else
+        {
+            return SW_BTNodeState.FAILURE;
+        }
+    }
+
+
+
+    public SW_BTNodeState TargetReachedCheck()
+    {
+        if (stats["targetReached"])
+        {
+            return SW_BTNodeState.SUCCESS;
+        }
+        else
+        {
+            return SW_BTNodeState.FAILURE;
+        }
+    }
 
     public void GeneratePathToWorldPoint(GameObject pointInWorld)
     {

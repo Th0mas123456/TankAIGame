@@ -100581,13 +100581,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8075740477363419617}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb717b8ae72a098448c3f367d4837fd4, type: 3}
+  m_Script: {fileID: 11500000, guid: ccb0ae092c0e759469619e05762b7fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyTank: {fileID: 0}
-  consumable: {fileID: 0}
-  enemyBase: {fileID: 0}
-  heuristicMode: 4
 --- !u!114 &9162085611844313069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100597,9 +100593,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8075740477363419617}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fda9697bf7e59eb408aaed7882a9fc97, type: 3}
+  m_Script: {fileID: 11500000, guid: d78c55fd2992c9d4c962f449d535df33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyTank: {fileID: 0}
+  consumable: {fileID: 0}
+  enemyBase: {fileID: 0}
+  heuristicMode: 4
 --- !u!1 &9177135291343502959
 GameObject:
   m_ObjectHideFlags: 0

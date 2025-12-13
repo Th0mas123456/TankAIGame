@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 using static AStar;
+using UnityEngine.XR;
 
 public class SW_PatrolState_FSMRBSBT : SW_BaseState_FSMRBSBT
 {
@@ -34,15 +35,18 @@ public class SW_PatrolState_FSMRBSBT : SW_BaseState_FSMRBSBT
 
     public override Type StateUpdate()
     {
-        tank.patrolMap();
-        foreach (var item in tank.rules.GetRules)
+        if (tank.regenSequence.Evaluate() == SW_BTNodeState.SUCCESS)
         {
-            if (item.CheckRule(tank.stats) != null)
+            tank.patrolMap();
+
+            foreach (var item in tank.rules.GetRules)
             {
-                return item.CheckRule(tank.stats);
+                if (item.CheckRule(tank.stats) != null)
+                {
+                    return item.CheckRule(tank.stats);
+                }
             }
         }
-
         return null;
     }
 }
